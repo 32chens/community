@@ -15,9 +15,9 @@ import java.io.Serializable;
 public class DiscussPost implements Serializable {
     private static final long serialVersionUID = 653954247782732132L;
     
-    private Integer id;
+    private int id;
     
-    private String userId;
+    private int userId;
     
     private String title;
     
@@ -25,15 +25,15 @@ public class DiscussPost implements Serializable {
     /**
      * 0-普通; 1-置顶;
      */
-    private Integer type;
+    private int type;
     /**
      * 0-正常; 1-精华; 2-拉黑;
      */
-    private Integer status;
+    private int status;
     
     private Date createTime;
     
-    private Integer commentCount;
+    private int commentCount;
     
     private Object score;
 
