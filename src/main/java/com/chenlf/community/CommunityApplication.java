@@ -12,8 +12,8 @@ public class CommunityApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(CommunityApplication.class, args);
-        UserMapper userMapper = (UserMapper) run.getBean("userMapper");
-        System.out.println(userMapper);
+//        UserMapper userMapper = (UserMapper) run.getBean("userMapper");
+//        System.out.println(userMapper);
     }
 
 }
