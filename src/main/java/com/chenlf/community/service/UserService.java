@@ -46,6 +46,11 @@ public class UserService {
         return userMapper.selectById(userId);
     }
 
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
     public Map<String, Object> register(User user){
         Map<String, Object> map = new HashMap<>();
         if (user == null){
@@ -86,12 +91,36 @@ public class UserService {
         //发送邮件
         Context context = new Context();
         context.setVariable("email", user.getEmail());
+        //http://localhost:8080/community/activation/101/code
         String url = domian + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
         context.setVariable("url",url);
         //生成html模板内容
         String content = templateEngine.process("/mail/activation", context);
         mailClient.sendMail(user.getEmail(), "激活账号", content);
         return map;
+    }
+
+    /**
+     * 激活账户
+     * @param userId
+     * @param code
+     * @return
+     */
+    public int activation(int userId, String code){
+        User user = userMapper.selectById(userId);
+        if (user == null){
+            return SystemConstants.USER_STATUS_UNACTIVE;
+        }
+        if (user.getStatus() == SystemConstants.USER_STATUS_UNACTIVE){
+            if (user.getActivationCode().equals(code)){
+                userMapper.updateStatus(userId,SystemConstants.USER_STATUS_ACTIVE);
+                return SystemConstants.USER_STATUS_ACTIVE;
+            }else{
+                return SystemConstants.USER_STATUS_UNACTIVE;
+            }
+        }else{
+            return SystemConstants.USER_STATUS_REPEAT;
+        }
     }
 
 }
