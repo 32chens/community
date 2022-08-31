@@ -23,4 +23,14 @@ public class SystemConstants {
      * 账户重复激活
      */
     public static final int USER_STATUS_REPEAT = 2;
+
+    /**
+     * 默认登录令牌存活时间
+     */
+    public static final int DEFAULT_LOGIN_EXPIRED = 60 * 60 * 12;
+
+    /**
+     * 记住我登录令牌存活时间
+     */
+    public static final int REMEMBER_LOGIN_EXPIRED = 60 * 60 * 24 * 10;
 }

@@ -15,7 +15,7 @@ public class CommunityUtil {
 
     //生成随机的字符串
     public static String generateUUID(){
-       return UUID.randomUUID().toString().replaceAll("-"," ");
+       return UUID.randomUUID().toString().replaceAll("-","");
     }
 
     //MD5加密（自能加密不能解密）

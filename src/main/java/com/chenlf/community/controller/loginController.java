@@ -9,14 +9,17 @@ import com.sun.deploy.net.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
@@ -34,6 +37,9 @@ import java.util.Map;
 public class loginController {
 
     private static final Logger logger = LoggerFactory.getLogger(loginController.class);
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
 
     @Autowired
     private UserService userService;
@@ -120,6 +126,47 @@ public class loginController {
         } catch (IOException e) {
             logger.error("相应验证码失败"+e.getMessage());
         }
+    }
+
+    /**
+     * 登录
+     * @param username
+     * @param password
+     * @param code
+     * @param rememberMe
+     * @param model
+     * @param session
+     * @param response
+     * @return
+     */
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public String login(String username, String password, String code, boolean rememberMe,
+                        Model model, HttpSession session, HttpServletResponse response,@CookieValue("ticket") String ticket){
+        String kaptcha = (String) session.getAttribute("kaptcha");
+        if (!kaptcha.equalsIgnoreCase(code)){
+            model.addAttribute("codeMsg","验证码错误!");
+            return "/site/login";
+        }
+
+        int expiredTime = rememberMe ? SystemConstants.REMEMBER_LOGIN_EXPIRED : SystemConstants.DEFAULT_LOGIN_EXPIRED;
+        Map<String, Object> map = userService.login(username, password, expiredTime,ticket);
+        if (map.containsKey("ticket")){
+            Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
+            cookie.setPath(contextPath);
+            cookie.setMaxAge(expiredTime);
+            response.addCookie(cookie);
+            return "redirect:/index";
+        }else{
+            model.addAttribute("usernameMsg",map.get("usernameMsg"));
+            model.addAttribute("passwordMsg",map.get("passwordMsg"));
+            return "/site/login";
+        }
+    }
+
+    @RequestMapping(path = "/logout", method = RequestMethod.GET)
+    public String logout(@CookieValue("ticket")String ticket){
+        userService.logout(ticket);
+        return "redirect:/login";
     }
 
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chenlf.community.mapper.LoginTicketMapper">
+
+
+    <sql id="insertFields">
+        user_id, ticket, status, expired
+    </sql>
+    <sql id="selectFields">
+        id, user_id, ticket, status, expired
+    </sql>
+
+<!--    Ticket selectByTicket(String loginTicket);   -->
+    <select id="selectByTicket" resultType="LoginTicket">
+        select <include refid="selectFields"></include>
+        from login_ticket
+        where ticket = #{ticket}
+    </select>
+
+<!--    int insertTicket(LoginTicket loginTicket);-->
+    <insert id="insertTicket" >
+        insert into login_ticket(<include refid="insertFields"/>)
+        values (#{userId}, #{ticket}, #{status}, #{expired})
+    </insert>
+
+<!--    int updateTicket(@Param("loginTicket") String loginTicket, @Param("status") int status);-->
+    <update id="updateTicket">
+        update login_ticket set status = #{status}
+        where ticket = #{ticket}
+    </update>
+</mapper>
