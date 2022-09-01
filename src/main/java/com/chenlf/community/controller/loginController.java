@@ -141,7 +141,7 @@ public class loginController {
      */
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(String username, String password, String code, boolean rememberMe,
-                        Model model, HttpSession session, HttpServletResponse response,@CookieValue("ticket") String ticket){
+                        Model model, HttpSession session, HttpServletResponse response){
         String kaptcha = (String) session.getAttribute("kaptcha");
         if (!kaptcha.equalsIgnoreCase(code)){
             model.addAttribute("codeMsg","验证码错误!");
@@ -149,10 +149,7 @@ public class loginController {
         }
 
         int expiredTime = rememberMe ? SystemConstants.REMEMBER_LOGIN_EXPIRED : SystemConstants.DEFAULT_LOGIN_EXPIRED;
-        Map<String, Object> map = userService.login(username, password, expiredTime,ticket);
-        if (map.size() == 0){
-            return "redirect:/index";
-        }
+        Map<String, Object> map = userService.login(username, password, expiredTime);
         if (map.containsKey("ticket")){
             Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
             cookie.setPath(contextPath);

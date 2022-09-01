@@ -136,7 +136,7 @@ public class UserService {
      * @param expiredTime
      * @return
      */
-    public Map<String,Object> login(String userName, String password, long expiredTime,String ticket){
+    public Map<String,Object> login(String userName, String password, long expiredTime){
         Map<String,Object>  map = new HashMap<>();
         if (StringUtils.isBlank(userName)){
             map.put("usernameMsg", "用户名不能为空");
@@ -155,14 +155,14 @@ public class UserService {
             map.put("passwordMsg", "密码不正确");
             return map;
         }
-        if (ticket!=null){
-            LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
-            if (loginTicket != null){
-                loginTicketMapper.updateTicket(ticket,0);
-//                map.put("ticket", loginTicket.getTicket());
-                return map;
-            }
-        }
+//        if (ticket!=null){
+//            LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
+//            if (loginTicket != null && loginTicket.getStatus() == 1){
+//                loginTicketMapper.updateTicket(ticket,0);
+////                map.put("ticket", loginTicket.getTicket());
+//                return map;
+//            }
+//        }
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(user.getId());
         loginTicket.setStatus(0);
@@ -175,5 +175,9 @@ public class UserService {
 
     public void logout(String ticket){
         loginTicketMapper.updateTicket(ticket,1);
+    }
+
+    public LoginTicket findLoginTicket(String ticket) {
+        return loginTicketMapper.selectByTicket(ticket);
     }
 }
