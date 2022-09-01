@@ -150,6 +150,9 @@ public class loginController {
 
         int expiredTime = rememberMe ? SystemConstants.REMEMBER_LOGIN_EXPIRED : SystemConstants.DEFAULT_LOGIN_EXPIRED;
         Map<String, Object> map = userService.login(username, password, expiredTime,ticket);
+        if (map.size() == 0){
+            return "redirect:/index";
+        }
         if (map.containsKey("ticket")){
             Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
             cookie.setPath(contextPath);

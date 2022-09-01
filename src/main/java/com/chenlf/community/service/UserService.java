@@ -155,14 +155,14 @@ public class UserService {
             map.put("passwordMsg", "密码不正确");
             return map;
         }
-//        if (ticket!=null){
-//            LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
-//            if (loginTicket != null){
-//                loginTicketMapper.updateTicket(ticket,0);
+        if (ticket!=null){
+            LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
+            if (loginTicket != null){
+                loginTicketMapper.updateTicket(ticket,0);
 //                map.put("ticket", loginTicket.getTicket());
-//                return map;
-//            }
-//        }
+                return map;
+            }
+        }
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(user.getId());
         loginTicket.setStatus(0);
