@@ -1,5 +1,6 @@
 package com.chenlf.community.controller;
 
+import com.chenlf.community.annotation.LoginRequired;
 import com.chenlf.community.entity.User;
 import com.chenlf.community.service.UserService;
 import com.chenlf.community.util.CommunityUtil;
@@ -50,6 +51,7 @@ public class UserController {
     private HostHolder hostHolder;
 
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage(){
         return "/site/setting";
@@ -61,6 +63,7 @@ public class UserController {
      * @param model
      * @return
      */
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model){
         if (headerImage == null){
