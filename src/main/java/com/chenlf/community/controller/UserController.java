@@ -85,7 +85,7 @@ public class UserController {
 
         //更新用户头像
         //http://localhost:8080/community/user/header/xxx.png
-        String path = domian + contextPath + "/user/header" + fileName;
+        String path = domian + contextPath + "/user/header/" + fileName;
         User user = hostHolder.getVal();
         userService.updateHeader(user.getId(), path);
 
