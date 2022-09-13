@@ -173,11 +173,25 @@ public class UserService {
         return map;
     }
 
+    /**
+     * 登出
+     * @param ticket
+     */
     public void logout(String ticket){
         loginTicketMapper.updateTicket(ticket,1);
     }
 
+    /**
+     * 查询令牌
+     * @param ticket
+     * @return
+     */
     public LoginTicket findLoginTicket(String ticket) {
         return loginTicketMapper.selectByTicket(ticket);
+    }
+
+
+    public int updateHeader(int userId, String headerUrl){
+        return userMapper.updateHeader(userId, headerUrl);
     }
 }
