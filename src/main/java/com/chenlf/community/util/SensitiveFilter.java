@@ -1,5 +1,6 @@
 package com.chenlf.community.util;
 
+import lombok.Data;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import java.util.Map;
  **/
 
 @Component
+@Data
 public class SensitiveFilter {
     private static final Logger logger = LoggerFactory.getLogger(SensitiveFilter.class);
     private static final String REPLASEMENT = "***";
@@ -45,6 +47,14 @@ public class SensitiveFilter {
 
         public TrieNode getSubNode(Character character){
             return subNodes.get(character);
+        }
+
+        @Override
+        public String toString() {
+            return "TrieNode{" +
+                    "isKeyWordEnd=" + isKeyWordEnd +
+                    ", subNodes=" + subNodes +
+                    '}';
         }
     }
     //根据敏感词初始化前缀树
@@ -105,8 +115,9 @@ public class SensitiveFilter {
                 if (tempNode == rootNode){
                     sb.append(c);
                     begin = ++position;
+                }else {
+                    position++;
                 }
-                position++;
                 continue;
             }
 
@@ -115,12 +126,11 @@ public class SensitiveFilter {
             //匹配不上敏感词
             if (subNode == null){
                 sb.append(c);
-                begin = ++position;
+                position = ++begin;
                 tempNode = rootNode;
             //敏感词前缀数叶子节点
             }else if (subNode.isKeyWordEnd()){
                 sb.append(REPLASEMENT);
-                System.out.println("叶子节点:"+REPLASEMENT);
                 begin = ++position;
                 tempNode = rootNode;
             //敏感词匹配上,只是疑似,需要匹配到叶子节点
@@ -129,8 +139,8 @@ public class SensitiveFilter {
                 tempNode = subNode;
                 //疑似敏感词,但是遍历到文本最后的字符不是叶子节点 例如:abc为敏感词 检测文本为fab
                 if (position >= text.length()){
-                    begin = position;
                     sb.append(text.charAt(begin));
+                    begin = position;
                 }
             }
         }
