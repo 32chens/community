@@ -33,4 +33,14 @@ public class SystemConstants {
      * 记住我登录令牌存活时间
      */
     public static final int REMEMBER_LOGIN_EXPIRED = 60 * 60 * 24 * 10;
+
+    /**
+     * 实体类型:帖子
+     */
+    public static final int ENTITY_TYPE_POST = 1;
+
+    /**
+     * 实体类型: 评论
+     */
+    public static final int ENTITY_TYPE_COMMENT = 2;
 }
