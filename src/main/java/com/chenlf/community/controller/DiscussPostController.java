@@ -74,7 +74,7 @@ public class DiscussPostController {
         model.addAttribute("post",discussPost);
         User user = userService.findUserById(discussPost.getUserId());
         model.addAttribute("user",user);
-
+        Integer.valueOf("abc");
         //评论的分页信息
         page.setLimit(5);
         page.setPath("/discuss/detail/"+id);
