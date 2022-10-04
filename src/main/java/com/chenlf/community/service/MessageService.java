@@ -2,8 +2,10 @@ package com.chenlf.community.service;
 
 import com.chenlf.community.entity.Message;
 import com.chenlf.community.mapper.MessageMapper;
+import com.chenlf.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -15,6 +17,9 @@ import java.util.List;
 
 @Service
 public class MessageService {
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     @Autowired
     private MessageMapper messageMapper;
@@ -37,6 +42,16 @@ public class MessageService {
 
     public int findLetterUnreadCount(int userId, String conversationId){
         return messageMapper.selectLetterUnreadCount(userId, conversationId);
+    }
+
+    public int insertMessage(Message message){
+        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+        message.setContent(sensitiveFilter.filter(message.getContent()));
+        return messageMapper.insertMessage(message);
+    }
+
+    public int readMessage(List<Integer> ids){
+        return messageMapper.updateStatus(ids, 1);
     }
 
 }

@@ -7,6 +7,9 @@
     <sql id="selectFields">
         id, from_id, to_id, conversation_id, content, status, create_time
     </sql>
+    <sql id="insertFields">
+        from_id, to_id, conversation_id, content, status, create_time
+    </sql>
 
 <!--    //查询当前用户的绘画列表，每个回话返回最新的一条-->
 <!--    List<Message> selectConversations(int userId, int offset, int limit);-->
@@ -71,5 +74,22 @@
             and conversation_id = #{conversationId}
         </if>
     </select>
+
+<!--    //新增消息-->
+<!--    int insertMessage(Message message);-->
+    <insert id="insertMessage" parameterType="Message" keyProperty="id">
+        insert into message (<include refid="insertFields"></include>)
+        values(#{fromId}, #{toId}, #{conversationId}, #{content}, #{status}, #{createTime})
+    </insert>
+
+<!--    //修改消息状态-->
+<!--    int updateStatus(List<Integer> ids, int status);-->
+    <update id="updateStatus" >
+        update message set status = #{status}
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 
 </mapper>

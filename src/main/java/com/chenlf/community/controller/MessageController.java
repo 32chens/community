@@ -5,19 +5,19 @@ import com.chenlf.community.entity.Page;
 import com.chenlf.community.entity.User;
 import com.chenlf.community.service.MessageService;
 import com.chenlf.community.service.UserService;
+import com.chenlf.community.util.CommunityUtil;
 import com.chenlf.community.util.HostHolder;
 
+import com.chenlf.community.util.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 
@@ -73,6 +73,18 @@ public class MessageController {
         return "/site/letter";
     }
 
+    private List<Integer> getLetterIds(List<Message> messages){
+        List<Integer> ids = new ArrayList<>();
+        if (messages != null){
+            for (Message message : messages) {
+                if (hostHolder.getVal().getId() == message.getToId() && message.getStatus() == 0){
+                    ids.add(message.getId());
+                }
+            }
+        }
+        return ids;
+    }
+
     @RequestMapping(path = "/detail/{conversationId}", method = RequestMethod.GET)
     public String getletterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model){
         page.setLimit(5);
@@ -91,7 +103,33 @@ public class MessageController {
         }
         model.addAttribute("letters",letters);
         model.addAttribute("target",this.getLetterTarget(conversationId));
+
+        List<Integer> ids = this.getLetterIds(letterList);
+        if (!ids.isEmpty()){
+            messageService.readMessage(ids);
+        }
         return "/site/letter-detail";
+    }
+
+    @RequestMapping(path = "/send", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendLetter(String toName, String content){
+        User target = userService.findUserByName(toName);
+        if (target == null){
+            return CommunityUtil.getJSONString(1,"目标用户不存在");
+        }
+        Message message = new Message();
+        message.setFromId(hostHolder.getVal().getId());
+        message.setToId(target.getId());
+        if (message.getFromId() < message.getToId()){
+            message.setConversationId(message.getFromId() + "_" + message.getToId());
+        }else{
+            message.setConversationId(message.getToId() + "_" + message.getFromId());
+        }
+        message.setContent(content);
+        message.setCreateTime(new Date());
+        messageService.insertMessage(message);
+        return CommunityUtil.getJSONString(0);
     }
 
     private User getLetterTarget(String conversationId){
