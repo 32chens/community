@@ -6,6 +6,7 @@ import com.chenlf.community.entity.Page;
 import com.chenlf.community.entity.User;
 import com.chenlf.community.service.CommentService;
 import com.chenlf.community.service.DiscussPostService;
+import com.chenlf.community.service.LikeService;
 import com.chenlf.community.service.UserService;
 import com.chenlf.community.util.CommunityUtil;
 import com.chenlf.community.util.HostHolder;
@@ -38,6 +39,9 @@ public class DiscussPostController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private LikeService likeService;
 
     /**
      * 发布帖子
@@ -74,7 +78,14 @@ public class DiscussPostController {
         model.addAttribute("post",discussPost);
         User user = userService.findUserById(discussPost.getUserId());
         model.addAttribute("user",user);
-        Integer.valueOf("abc");
+        // 点赞数量
+        long likeCount = likeService.getLikeCount(SystemConstants.ENTITY_TYPE_POST, id);
+        model.addAttribute("likeCount", likeCount);
+        // 点赞状态
+        int likeStatus = hostHolder.getVal() == null ? 0 :
+                likeService.getLikeStatus(hostHolder.getVal().getId(), SystemConstants.ENTITY_TYPE_POST, id);
+        model.addAttribute("likeStatus", likeStatus);
+
         //评论的分页信息
         page.setLimit(5);
         page.setPath("/discuss/detail/"+id);
@@ -90,6 +101,13 @@ public class DiscussPostController {
                 Map<String, Object> commentVO = new HashMap<>();
                 commentVO.put("comment",comment);
                 commentVO.put("user",userService.findUserById(discussPost.getUserId()));
+                // 点赞数量
+                likeCount = likeService.getLikeCount(SystemConstants.ENTITY_TYPE_COMMENT, comment.getId());
+                commentVO.put("likeCount", likeCount);
+                // 点赞状态
+                likeStatus = hostHolder.getVal() == null ? 0 :
+                        likeService.getLikeStatus(hostHolder.getVal().getId(), SystemConstants.ENTITY_TYPE_COMMENT, comment.getId());
+                commentVO.put("likeStatus", likeStatus);
                 //评论的评论
                 List<Comment> replyList = commentService.findCommentByEntity(
                         SystemConstants.ENTITY_TYPE_COMMENT,
@@ -100,6 +118,13 @@ public class DiscussPostController {
                         Map<String, Object> replyVO = new HashMap<>();
                         replyVO.put("reply",reply);
                         replyVO.put("user", userService.findUserById(reply.getUserId()));
+                        // 点赞数量
+                        likeCount = likeService.getLikeCount(SystemConstants.ENTITY_TYPE_COMMENT, reply.getId());
+                        replyVO.put("likeCount", likeCount);
+                        // 点赞状态
+                        likeStatus = hostHolder.getVal() == null ? 0 :
+                                likeService.getLikeStatus(hostHolder.getVal().getId(), SystemConstants.ENTITY_TYPE_COMMENT, reply.getId());
+                        replyVO.put("likeStatus", likeStatus);
                         User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
                         replyVO.put("target", target);
                         replyVoList.add(replyVO);

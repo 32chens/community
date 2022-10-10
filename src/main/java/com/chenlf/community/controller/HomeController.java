@@ -3,8 +3,10 @@ package com.chenlf.community.controller;
 import com.chenlf.community.entity.Page;
 import com.chenlf.community.entity.User;
 import com.chenlf.community.service.DiscussPostService;
+import com.chenlf.community.service.LikeService;
 import com.chenlf.community.service.UserService;
 import com.chenlf.community.entity.DiscussPost;
+import com.chenlf.community.util.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +33,9 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LikeService likeService;
+
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page) {
         // 方法调用钱,SpringMVC会自动实例化Model和Page,并将Page注入Model.
@@ -46,6 +51,8 @@ public class HomeController {
                 map.put("post", post);
                 User user = userService.findUserById(post.getUserId());
                 map.put("user", user);
+                long likeCount = likeService.getLikeCount(SystemConstants.ENTITY_TYPE_POST, post.getId());
+                map.put("likeCount", likeCount);
                 discussPosts.add(map);
             }
         }
