@@ -1,11 +1,10 @@
 package com.chenlf.community.controller;
 
-import com.chenlf.community.annotation.LoginRequired;
 import com.chenlf.community.entity.User;
 import com.chenlf.community.service.LikeService;
 import com.chenlf.community.util.CommunityUtil;
 import com.chenlf.community.util.HostHolder;
-import com.chenlf.community.util.RedisKeyUitl;
+import com.chenlf.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,15 +31,15 @@ public class LikeController {
 
     @RequestMapping(path = "/like", method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId){
-        String redisLikeKey = RedisKeyUitl.getRedisLikeKey(entityType, entityId);
+    public String like(int entityType, int entityId, int entityUserId){
+        String redisLikeKey = RedisKeyUtil.getRedisEntityLikeKey(entityType, entityId);
         User user = hostHolder.getVal();
         if (user == null){
             return CommunityUtil.getJSONString(403,"用户未登录");
         }
         int userId = user.getId();
         //点赞
-        likeService.like(userId,entityType,entityId);
+        likeService.like(userId,entityType,entityId,entityUserId);
         //数量
         long likeCount = likeService.getLikeCount(entityType, entityId);
         //状态

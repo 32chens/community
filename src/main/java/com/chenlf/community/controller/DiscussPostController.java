@@ -100,7 +100,7 @@ public class DiscussPostController {
             for (Comment comment: commentList) {
                 Map<String, Object> commentVO = new HashMap<>();
                 commentVO.put("comment",comment);
-                commentVO.put("user",userService.findUserById(discussPost.getUserId()));
+                commentVO.put("user",userService.findUserById(comment.getUserId()));
                 // 点赞数量
                 likeCount = likeService.getLikeCount(SystemConstants.ENTITY_TYPE_COMMENT, comment.getId());
                 commentVO.put("likeCount", likeCount);

@@ -2,9 +2,12 @@ package com.chenlf.community.controller;
 
 import com.chenlf.community.annotation.LoginRequired;
 import com.chenlf.community.entity.User;
+import com.chenlf.community.service.FollowService;
+import com.chenlf.community.service.LikeService;
 import com.chenlf.community.service.UserService;
 import com.chenlf.community.util.CommunityUtil;
 import com.chenlf.community.util.HostHolder;
+import com.chenlf.community.util.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,11 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -121,5 +129,34 @@ public class UserController {
         }
     }
 
+    /**
+     * 个人主页
+     * @param userId
+     * @param model
+     * @return
+     */
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId")int userId, Model model){
+        User user = userService.findUserById(userId);
+        if (user == null){
+            throw new RuntimeException("用户不存在");
+        }
+        model.addAttribute("user",user);
+        model.addAttribute("likeCount",likeService.getUserLikeCount(userId));
+
+        //关注数量
+        long followeeCount = followService.findFolloweeCount(userId, SystemConstants.ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount",followeeCount);
+        //粉丝数量
+        long followerCount = followService.findFollowerCount(SystemConstants.ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount",followerCount);
+        //是否已关注
+        boolean hasFollowed = false;
+        if (hostHolder.getVal() != null){
+            hasFollowed = followService.hasFollowed(hostHolder.getVal().getId(), SystemConstants.ENTITY_TYPE_USER, userId);
+        }
+        model.addAttribute("hasFollowed",hasFollowed );
+        return "/site/profile";
+    }
 
 }
