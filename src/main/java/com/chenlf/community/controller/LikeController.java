@@ -32,7 +32,7 @@ public class LikeController {
     @RequestMapping(path = "/like", method = RequestMethod.POST)
     @ResponseBody
     public String like(int entityType, int entityId, int entityUserId){
-        String redisLikeKey = RedisKeyUtil.getRedisEntityLikeKey(entityType, entityId);
+//        String redisLikeKey = RedisKeyUtil.getRedisEntityLikeKey(entityType, entityId);
         User user = hostHolder.getVal();
         if (user == null){
             return CommunityUtil.getJSONString(403,"用户未登录");

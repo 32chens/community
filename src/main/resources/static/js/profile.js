@@ -20,6 +20,7 @@ function follow() {
 		);
 		// $(btn).text("已关注").removeClass("btn-info").addClass("btn-secondary");
 	} else {
+		console.log("点击了已关注")
 		// 取消关注
 		$.post(
 			CONTEXT_PATH + "/unfollow",
