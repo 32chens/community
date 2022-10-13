@@ -48,4 +48,24 @@ public class SystemConstants {
      * 实体类型: 用户
      */
     public static final int ENTITY_TYPE_USER = 3;
+
+    /**
+     * Kafka主题: 评论
+     */
+    public static final String TOPIC_COMMENT = "comment";
+
+    /**
+     * Kafka主题: 点赞
+     */
+    public static final String TOPIC_LIKE = "like";
+
+    /**
+     * Kafka主题: 关注
+     */
+    public static final String TOPIC_FOLLOW = "follow";
+
+    /**
+     * 系统用户id
+     */
+    public static final int SYSTEM_USER_ID = 1;
 }

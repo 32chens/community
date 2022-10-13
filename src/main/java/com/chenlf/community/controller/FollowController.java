@@ -1,7 +1,9 @@
 package com.chenlf.community.controller;
 
+import com.chenlf.community.entity.Event;
 import com.chenlf.community.entity.Page;
 import com.chenlf.community.entity.User;
+import com.chenlf.community.event.EventProducer;
 import com.chenlf.community.service.FollowService;
 import com.chenlf.community.service.UserService;
 import com.chenlf.community.util.CommunityUtil;
@@ -36,12 +38,23 @@ public class FollowController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
     @ResponseBody
     public String follow(int entityType, int entityId){
         User user = hostHolder.getVal();
 
         followService.follow(user.getId(), entityType, entityId);
+
+        Event event = new Event();
+        event.setTopic(SystemConstants.TOPIC_FOLLOW)
+                .setUserId(hostHolder.getVal().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
         return CommunityUtil.getJSONString(0,"已关注");
     }
 

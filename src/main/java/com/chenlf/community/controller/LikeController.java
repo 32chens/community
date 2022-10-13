@@ -1,10 +1,13 @@
 package com.chenlf.community.controller;
 
+import com.chenlf.community.entity.Event;
 import com.chenlf.community.entity.User;
+import com.chenlf.community.event.EventProducer;
 import com.chenlf.community.service.LikeService;
 import com.chenlf.community.util.CommunityUtil;
 import com.chenlf.community.util.HostHolder;
 import com.chenlf.community.util.RedisKeyUtil;
+import com.chenlf.community.util.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,9 +32,12 @@ public class LikeController {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/like", method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId, int entityUserId){
+    public String like(int entityType, int entityId, int entityUserId, int postId){
 //        String redisLikeKey = RedisKeyUtil.getRedisEntityLikeKey(entityType, entityId);
         User user = hostHolder.getVal();
         if (user == null){
@@ -48,6 +54,17 @@ public class LikeController {
         Map<String, Object> map = new HashMap<>();
         map.put("likeCount", likeCount);
         map.put("likeStatus", likeStatus);
+
+        if (likeStatus == 1 && userId != entityUserId){
+            Event event = new Event();
+            event.setTopic(SystemConstants.TOPIC_LIKE)
+                    .setUserId(hostHolder.getVal().getId())
+                    .setEntityType(entityType)
+                    .setEntityId(entityId)
+                    .setEntityUserId(entityUserId)
+                    .setData("postId",postId);
+            eventProducer.fireEvent(event);
+        }
         return CommunityUtil.getJSONString(0,null, map);
     }
 

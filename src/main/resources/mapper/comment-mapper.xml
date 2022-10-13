@@ -22,6 +22,13 @@
         limit #{offset}, #{limit}
     </select>
 
+    <!-- Comment selectCommentById(int entityId);-->
+    <select id="selectCommentById" resultType="Comment">
+        select <include refid="selectField"></include>
+        from comment
+        where id = #{entityId}
+    </select>
+
     <!--int selectCountByEntity(int entityType, int entityId);-->
     <select id="selectCountByEntity" resultType="int">
         select count(id)
