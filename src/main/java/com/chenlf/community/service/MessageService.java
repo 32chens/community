@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -18,10 +19,10 @@ import java.util.List;
 @Service
 public class MessageService {
 
-    @Autowired
+    @Resource
     private SensitiveFilter sensitiveFilter;
 
-    @Autowired
+    @Resource
     private MessageMapper messageMapper;
 
     public List<Message> findConversations(int userId, int offset, int limit){
@@ -52,6 +53,22 @@ public class MessageService {
 
     public int readMessage(List<Integer> ids){
         return messageMapper.updateStatus(ids, 1);
+    }
+
+    public Message findLastNotice(int userId, String topic){
+        return messageMapper.selectLastNotice(userId,topic);
+    }
+
+    public int findNoticeCount(int userId,String topic){
+        return messageMapper.selectNoticeCount(userId,topic);
+    }
+
+    public int findUnreadNoticeCount(int userId,String topic){
+        return messageMapper.selectUnreadNoticeCount(userId, topic);
+    }
+
+    public List<Message> findNotices(int userId, String topic, int offset, int limit){
+        return messageMapper.selectNotices(userId, topic, offset, limit);
     }
 
 }
