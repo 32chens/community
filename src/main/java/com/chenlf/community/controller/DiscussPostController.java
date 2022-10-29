@@ -1,9 +1,6 @@
 package com.chenlf.community.controller;
 
-import com.chenlf.community.entity.Comment;
-import com.chenlf.community.entity.DiscussPost;
-import com.chenlf.community.entity.Page;
-import com.chenlf.community.entity.User;
+import com.chenlf.community.entity.*;
 import com.chenlf.community.service.CommentService;
 import com.chenlf.community.service.DiscussPostService;
 import com.chenlf.community.service.LikeService;
@@ -62,6 +59,14 @@ public class DiscussPostController {
         discussPost.setContent(content);
         discussPost.setCreateTime(new Date());
         discussPostService.insertDiscussPost(discussPost);
+
+        //发帖事件 存入ES
+        Event event = new Event();
+        event.setTopic(SystemConstants.TOPIC_PUBLISH);
+        event.setUserId(user.getId());
+        event.setEntityType(SystemConstants.ENTITY_TYPE_POST);
+        event.setEntityId(discussPost.getId());
+
         return CommunityUtil.getJSONString(0,"操作成功");
     }
 

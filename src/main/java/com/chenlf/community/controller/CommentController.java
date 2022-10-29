@@ -68,6 +68,17 @@ public class CommentController {
             }
         }
         eventProducer.fireEvent(event);
+
+        //触发给帖子评论事件 存入ES
+        if (comment.getEntityType() == SystemConstants.ENTITY_TYPE_POST){
+            event = new Event();
+            event.setTopic(SystemConstants.TOPIC_PUBLISH);
+            event.setUserId(comment.getUserId());
+            event.setEntityType(SystemConstants.ENTITY_TYPE_POST);
+            event.setEntityId(discussPostId);
+            event.setEntityUserId(0);
+        }
+        eventProducer.fireEvent(event);
         return "redirect:/discuss/detail/" + discussPostId;
     }
 }
