@@ -20,8 +20,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private LoginTicketIntercepter loginTicketIntercepter;
 
-    @Autowired
-    private LoginRequiredIntercepter loginRequiredIntercepter;
+//    @Autowired
+//    private LoginRequiredIntercepter loginRequiredIntercepter;
 
     @Autowired
     private MessageIntercepter messageIntercepter;
@@ -30,8 +30,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginTicketIntercepter)
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.png", "/**/*.jpeg");
-        registry.addInterceptor(loginRequiredIntercepter)
-                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.png", "/**/*.jpeg");
+//        registry.addInterceptor(loginRequiredIntercepter)
+//                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.png", "/**/*.jpeg");
         registry.addInterceptor(messageIntercepter)
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.png", "/**/*.jpeg");
     }
