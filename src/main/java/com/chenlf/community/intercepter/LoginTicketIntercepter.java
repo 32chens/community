@@ -6,6 +6,7 @@ import com.chenlf.community.service.UserService;
 import com.chenlf.community.util.CookieUtil;
 import com.chenlf.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +34,7 @@ public class LoginTicketIntercepter implements HandlerInterceptor {
     @Autowired
     private HostHolder hostHolder;
 
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ticket = CookieUtil.getValue(request, "ticket");
@@ -45,6 +47,7 @@ public class LoginTicketIntercepter implements HandlerInterceptor {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         user, user.getPassword(), userService.getAuthorities(user.getId()));
                 SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
         return true;
@@ -61,6 +64,6 @@ public class LoginTicketIntercepter implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         hostHolder.clean();
-        SecurityContextHolder.clearContext();
+//        SecurityContextHolder.clearContext();
     }
 }

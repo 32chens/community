@@ -48,6 +48,7 @@ public class SearchController {
             map.put("post",post);
             map.put("user",userService.findUserById(post.getUserId()));
             map.put("likeCount",likeService.getLikeCount(SystemConstants.ENTITY_TYPE_POST, post.getId()));
+            postVOs.add(map);
         }
         model.addAttribute("discussPosts", postVOs);
         model.addAttribute("keyword", keyword);

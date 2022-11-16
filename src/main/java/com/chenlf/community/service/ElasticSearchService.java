@@ -44,11 +44,11 @@ public class ElasticSearchService {
 
     public List<DiscussPost> searchDiscussPost(String keyword, int current, int limit){
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.multiMatchQuery("互联网寒冬", "title", "content"))
+                .withQuery(QueryBuilders.multiMatchQuery(keyword, "title", "content"))
                 .withSorts(SortBuilders.fieldSort("type").order(SortOrder.DESC),
                         SortBuilders.fieldSort("score").order(SortOrder.DESC),
                         SortBuilders.fieldSort("createTime").order(SortOrder.DESC))
-                .withPageable(PageRequest.of(0, 10))
+                .withPageable(PageRequest.of(current, limit))
                 .withHighlightFields(
                         new HighlightBuilder.Field("title").preTags("<em>").postTags("</em>"),
                         new HighlightBuilder.Field("content").preTags("<em>").postTags("</em>")

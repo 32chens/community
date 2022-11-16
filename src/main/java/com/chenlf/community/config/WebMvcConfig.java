@@ -1,5 +1,6 @@
 package com.chenlf.community.config;
 
+import com.chenlf.community.intercepter.DataIntercepter;
 import com.chenlf.community.intercepter.LoginRequiredIntercepter;
 import com.chenlf.community.intercepter.LoginTicketIntercepter;
 import com.chenlf.community.intercepter.MessageIntercepter;
@@ -26,6 +27,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private MessageIntercepter messageIntercepter;
 
+    @Autowired
+    private DataIntercepter dataIntercepter;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginTicketIntercepter)
@@ -33,6 +37,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //        registry.addInterceptor(loginRequiredIntercepter)
 //                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.png", "/**/*.jpeg");
         registry.addInterceptor(messageIntercepter)
+                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.png", "/**/*.jpeg");
+        registry.addInterceptor(dataIntercepter)
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.png", "/**/*.jpeg");
     }
 }

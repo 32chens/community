@@ -1,7 +1,9 @@
 package com.chenlf.community.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -38,7 +40,10 @@ public class DiscussPost implements Serializable {
     @Field(type = FieldType.Integer)
     private int status;
 
-    @Field(type = FieldType.Date)
+//    @Field(type = FieldType.Date,format = DateFormat.date_optional_time)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="yyyy-MM-dd'T'HH:mm:ss.SSSZ",timezone="GMT+8")
+    @Field(type = FieldType.Date, format = DateFormat.epoch_millis,pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="yyyy-MM-dd",timezone="GMT+8")
     private Date createTime;
 
     @Field(type = FieldType.Integer)

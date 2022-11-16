@@ -1,6 +1,7 @@
 package com.chenlf.community.controller;
 
 import com.chenlf.community.entity.*;
+import com.chenlf.community.event.EventProducer;
 import com.chenlf.community.service.CommentService;
 import com.chenlf.community.service.DiscussPostService;
 import com.chenlf.community.service.LikeService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -40,6 +42,11 @@ public class DiscussPostController {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
+    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
     /**
      * 发布帖子
      * @param title
@@ -66,7 +73,7 @@ public class DiscussPostController {
         event.setUserId(user.getId());
         event.setEntityType(SystemConstants.ENTITY_TYPE_POST);
         event.setEntityId(discussPost.getId());
-
+        eventProducer.fireEvent(event);
         return CommunityUtil.getJSONString(0,"操作成功");
     }
 
@@ -149,6 +156,48 @@ public class DiscussPostController {
         return "/site/discuss-detail";
     }
 
+    //置顶
+    @RequestMapping(path = "/top", method = RequestMethod.POST)
+    @ResponseBody
+    public String setTop(int id){
+        discussPostService.updateType(id,1);
+        Event event = new Event();
+        event.setTopic(SystemConstants.TOPIC_PUBLISH);
+        event.setUserId(hostHolder.getVal().getId());
+        event.setEntityType(SystemConstants.ENTITY_TYPE_POST);
+        event.setEntityId(id);
+        eventProducer.fireEvent(event);
+        return CommunityUtil.getJSONString(0);
+    }
+
+    //加精
+    @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
+    @ResponseBody
+    public String setWonderful(int id){
+        discussPostService.updateStatus(id,1);
+        Event event = new Event();
+        event.setTopic(SystemConstants.TOPIC_PUBLISH);
+        event.setUserId(hostHolder.getVal().getId());
+        event.setEntityType(SystemConstants.ENTITY_TYPE_POST);
+        event.setEntityId(id);
+        eventProducer.fireEvent(event);
+        return CommunityUtil.getJSONString(0);
+    }
+
+    //删除
+    @RequestMapping(path = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public String setDelete(int id){
+        discussPostService.updateStatus(id,1);
+        //触发删贴事件
+        Event event = new Event();
+        event.setTopic(SystemConstants.TOPIC_DELETE);
+        event.setUserId(hostHolder.getVal().getId());
+        event.setEntityType(SystemConstants.ENTITY_TYPE_POST);
+        event.setEntityId(id);
+        eventProducer.fireEvent(event);
+        return CommunityUtil.getJSONString(0);
+    }
 
 
 }

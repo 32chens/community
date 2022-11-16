@@ -2,17 +2,20 @@ package com.chenlf.community.service;
 
 import com.chenlf.community.entity.LoginTicket;
 import com.chenlf.community.entity.User;
-import com.chenlf.community.mapper.LoginTicketMapper;
+
 import com.chenlf.community.mapper.UserMapper;
 import com.chenlf.community.util.CommunityUtil;
 import com.chenlf.community.util.MailClient;
 import com.chenlf.community.util.RedisKeyUtil;
 import com.chenlf.community.util.SystemConstants;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -41,6 +44,7 @@ public class UserService {
 
     @Resource
     private RedisTemplate redisTemplate;
+
 
 //    @Resource
 //    private LoginTicketMapper loginTicketMapper;
