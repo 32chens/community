@@ -7,8 +7,10 @@ import com.chenlf.community.event.EventProducer;
 import com.chenlf.community.service.CommentService;
 import com.chenlf.community.service.DiscussPostService;
 import com.chenlf.community.util.HostHolder;
+import com.chenlf.community.util.RedisKeyUtil;
 import com.chenlf.community.util.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,9 @@ public class CommentController {
 
     @Autowired
     private DiscussPostService discussPostService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @RequestMapping(path = "/add/{discussPostId}", method = RequestMethod.POST)
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment){
@@ -79,6 +84,11 @@ public class CommentController {
             event.setEntityUserId(0);
         }
         eventProducer.fireEvent(event);
+
+        if (comment.getEntityType() == SystemConstants.ENTITY_TYPE_POST){
+            String redisKey = RedisKeyUtil.getPostKey();
+            redisTemplate.opsForSet().add(redisKey, discussPostId);
+        }
         return "redirect:/discuss/detail/" + discussPostId;
     }
 }

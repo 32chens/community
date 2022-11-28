@@ -8,8 +8,10 @@ import com.chenlf.community.service.LikeService;
 import com.chenlf.community.service.UserService;
 import com.chenlf.community.util.CommunityUtil;
 import com.chenlf.community.util.HostHolder;
+import com.chenlf.community.util.RedisKeyUtil;
 import com.chenlf.community.util.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +47,9 @@ public class DiscussPostController {
     @Autowired
     private EventProducer eventProducer;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     /**
@@ -74,6 +79,10 @@ public class DiscussPostController {
         event.setEntityType(SystemConstants.ENTITY_TYPE_POST);
         event.setEntityId(discussPost.getId());
         eventProducer.fireEvent(event);
+
+        String redisKey = RedisKeyUtil.getPostKey();
+        redisTemplate.opsForSet().add(redisKey, discussPost.getId());
+
         return CommunityUtil.getJSONString(0,"操作成功");
     }
 
@@ -181,6 +190,9 @@ public class DiscussPostController {
         event.setEntityType(SystemConstants.ENTITY_TYPE_POST);
         event.setEntityId(id);
         eventProducer.fireEvent(event);
+
+        String redisKey = RedisKeyUtil.getPostKey();
+        redisTemplate.opsForSet().add(redisKey, id);
         return CommunityUtil.getJSONString(0);
     }
 

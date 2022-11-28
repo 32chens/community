@@ -20,7 +20,7 @@ class DiscussPostMapperTest {
 
     @Test
     void selectDiscussPosts() {
-        List<DiscussPost> discussPosts = discussPostMapper.selectDiscussPosts(0, 0, 10);
+        List<DiscussPost> discussPosts = discussPostMapper.selectDiscussPosts(0, 0, 10, 0);
         for (DiscussPost discussPost : discussPosts){
             System.out.println(discussPost);
         }

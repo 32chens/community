@@ -25,8 +25,8 @@ public class DiscussPostService {
     @Resource
     private DiscussPostMapper discussPostMapper;
 
-    public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit){
-        return discussPostMapper.selectDiscussPosts(userId,offset,limit);
+    public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit,int orderModel){
+        return discussPostMapper.selectDiscussPosts(userId,offset,limit,orderModel);
     }
 
     public int findDiscussPostRows(int userId){
@@ -59,5 +59,9 @@ public class DiscussPostService {
 
     public int updateStatus(int id, int status){
         return discussPostMapper.updateStatus(id,status);
+    }
+
+    public int updateScore(int id, double score){
+        return discussPostMapper.updateScore(id, score);
     }
 }
