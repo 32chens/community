@@ -1,7 +1,6 @@
 package com.chenlf.community.quartz;
 
 import com.chenlf.community.entity.DiscussPost;
-import com.chenlf.community.service.CommentService;
 import com.chenlf.community.service.DiscussPostService;
 import com.chenlf.community.service.ElasticSearchService;
 import com.chenlf.community.service.LikeService;

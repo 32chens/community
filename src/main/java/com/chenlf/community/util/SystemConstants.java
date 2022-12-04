@@ -65,6 +65,11 @@ public class SystemConstants {
     public static final String TOPIC_FOLLOW = "follow";
 
     /**
+     * Kafka主题： 分享
+     */
+    public static final String TOPIC_SHARE = "share";
+
+    /**
      * Kafka主题: 发帖
      */
     public static final String TOPIC_PUBLISH = "publish";
