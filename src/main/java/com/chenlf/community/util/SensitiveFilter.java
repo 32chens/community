@@ -139,7 +139,7 @@ public class SensitiveFilter {
                 tempNode = subNode;
                 //疑似敏感词,但是遍历到文本最后的字符不是叶子节点 例如:abc为敏感词 检测文本为fab
                 if (position >= text.length()){
-                    sb.append(text.charAt(begin));
+                    sb.append(text.substring(begin));
                     begin = position;
                 }
             }

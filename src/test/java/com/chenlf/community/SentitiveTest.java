@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
  * @date 2022/09/19 00:04
  **/
 
-@SpringBootTest(classes = {CommunityApplication.class})
+@SpringBootTest(classes = {SensitiveFilter.class})
 @ContextConfiguration(classes = SentitiveTest.class)
 public class SentitiveTest {
 
@@ -24,6 +24,9 @@ public class SentitiveTest {
     public void testSentitiveFilter(){
         String test = "这里可以★吸★★★★★毒★,赌赌博,赌赌博博,开开票";
         String filter = sensitiveFilter.filter(test);
+        System.out.println(filter);
+        test = "这里搞黄";
+        filter = sensitiveFilter.filter(test);
         System.out.println(filter);
     }
 }

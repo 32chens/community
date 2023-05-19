@@ -27,7 +27,7 @@ import java.util.Map;
  * @date 2022/10/29 16:33
  **/
 
-@Controller
+//@Controller
 public class SearchController {
 
     @Autowired
